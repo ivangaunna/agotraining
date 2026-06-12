@@ -113,13 +113,13 @@ export function Header() {
                   Ago<span className="text-blue-500">Training</span>
                 </span>
               </div>
-              <nav className="flex flex-col gap-4">
+              <nav className="flex flex-col gap-1">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="text-base text-gray-300 hover:text-white transition-colors py-1"
+                    className="text-base text-gray-300 hover:text-white hover:bg-white/5 transition-colors px-3 py-2.5 rounded-lg"
                   >
                     {link.label}
                   </Link>
