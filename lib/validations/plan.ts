@@ -6,8 +6,10 @@ export const planSchema = z.object({
   description: z.string().min(20, 'La descripción debe tener al menos 20 caracteres').max(1000),
   benefits: z.array(z.string().min(1)).min(1, 'Agregá al menos un beneficio').max(10),
   price: z.number().positive('El precio debe ser mayor a 0'),
+  original_price: z.number().positive().nullable().optional(),
   currency: z.string().default('ARS'),
-  goal: z.enum(['fat_loss', 'hypertrophy', 'body_recomposition']),
+  goal: z.enum(['fat_loss', 'hypertrophy', 'body_recomposition', 'all']),
+  location: z.enum(['gym', 'home', 'both']).default('gym'),
   is_active: z.boolean().default(true),
   display_order: z.number().int().min(0).default(0),
 })

@@ -40,8 +40,10 @@ export type Database = {
           description: string
           benefits: string[]
           price: number
+          original_price: number | null
           currency: string
-          goal: 'fat_loss' | 'hypertrophy' | 'body_recomposition'
+          goal: 'fat_loss' | 'hypertrophy' | 'body_recomposition' | 'all'
+          location: 'gym' | 'home' | 'both'
           is_active: boolean
           display_order: number
           created_at: string
@@ -54,8 +56,10 @@ export type Database = {
           description: string
           benefits?: string[]
           price: number
+          original_price?: number | null
           currency?: string
-          goal: 'fat_loss' | 'hypertrophy' | 'body_recomposition'
+          goal: 'fat_loss' | 'hypertrophy' | 'body_recomposition' | 'all'
+          location?: 'gym' | 'home' | 'both'
           is_active?: boolean
           display_order?: number
           created_at?: string
@@ -68,8 +72,10 @@ export type Database = {
           description?: string
           benefits?: string[]
           price?: number
+          original_price?: number | null
           currency?: string
-          goal?: 'fat_loss' | 'hypertrophy' | 'body_recomposition'
+          goal?: 'fat_loss' | 'hypertrophy' | 'body_recomposition' | 'all'
+          location?: 'gym' | 'home' | 'both'
           is_active?: boolean
           display_order?: number
           updated_at?: string

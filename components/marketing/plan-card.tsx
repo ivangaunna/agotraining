@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Check, Loader2 } from 'lucide-react'
+import { Check, Loader2, Dumbbell, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { initiateCheckout } from '@/actions/purchases'
@@ -16,19 +15,16 @@ interface PlanCardProps {
 }
 
 export function PlanCard({ plan, featured = false }: PlanCardProps) {
-  const router = useRouter()
   const [loading, setLoading] = useState(false)
 
   async function handlePurchase() {
     setLoading(true)
     try {
       const result = await initiateCheckout(plan.id)
-
       if ('error' in result && result.error) {
         toast.error(result.error)
         return
       }
-
       if ('checkoutUrl' in result && result.checkoutUrl) {
         window.location.href = result.checkoutUrl
       }
@@ -38,6 +34,10 @@ export function PlanCard({ plan, featured = false }: PlanCardProps) {
       setLoading(false)
     }
   }
+
+  const discount = plan.original_price && plan.original_price > plan.price
+    ? Math.round((1 - plan.price / plan.original_price) * 100)
+    : null
 
   return (
     <div
@@ -56,12 +56,34 @@ export function PlanCard({ plan, featured = false }: PlanCardProps) {
       )}
 
       <div className="mb-6">
-        <p className="text-sm text-blue-400 font-medium mb-1">{goalBadgeLabel(plan.goal)}</p>
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-sm text-blue-400 font-medium">{goalBadgeLabel(plan.goal)}</p>
+          <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${
+            plan.location === 'home'
+              ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+              : plan.location === 'both'
+              ? 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
+              : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+          }`}>
+            {plan.location === 'home' ? <Home className="h-3 w-3" /> : <Dumbbell className="h-3 w-3" />}
+            {plan.location === 'home' ? 'Casa' : plan.location === 'both' ? 'Gym & Casa' : 'Gym'}
+          </span>
+        </div>
         <h3 className="text-xl font-bold text-white mb-3">{plan.title}</h3>
         <p className="text-sm text-gray-400 leading-relaxed">{plan.description}</p>
       </div>
 
       <div className="mb-6">
+        {discount && plan.original_price && (
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-sm text-gray-500 line-through">
+              {formatCurrency(plan.original_price, plan.currency)}
+            </span>
+            <span className="text-xs font-bold text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-full">
+              {discount}% OFF
+            </span>
+          </div>
+        )}
         <div className="flex items-end gap-1">
           <span className="text-4xl font-bold text-white">{formatCurrency(plan.price, plan.currency)}</span>
         </div>
@@ -105,6 +127,7 @@ function goalBadgeLabel(goal: Plan['goal']): string {
     fat_loss: 'Pérdida de Grasa',
     hypertrophy: 'Masa Muscular',
     body_recomposition: 'Recomposición',
+    all: 'Para todos los objetivos',
   }
   return labels[goal]
 }

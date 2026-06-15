@@ -27,7 +27,9 @@ export function PlanForm({ plan }: PlanFormProps) {
   const [description, setDescription] = useState(plan?.description ?? '')
   const [benefits, setBenefits] = useState<string[]>(plan?.benefits ?? [''])
   const [price, setPrice] = useState(plan?.price?.toString() ?? '')
+  const [originalPrice, setOriginalPrice] = useState(plan?.original_price?.toString() ?? '')
   const [goal, setGoal] = useState<Plan['goal'] | ''>(plan?.goal ?? '')
+  const [location, setLocation] = useState<Plan['location']>(plan?.location ?? 'gym')
   const [displayOrder, setDisplayOrder] = useState(plan?.display_order?.toString() ?? '0')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -64,8 +66,10 @@ export function PlanForm({ plan }: PlanFormProps) {
       description,
       benefits: benefits.filter(Boolean),
       price: parseFloat(price),
+      original_price: originalPrice ? parseFloat(originalPrice) : null,
       currency: 'ARS',
       goal: goal as Plan['goal'],
+      location,
       is_active: true,
       display_order: parseInt(displayOrder),
     }
@@ -128,14 +132,14 @@ export function PlanForm({ plan }: PlanFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="space-y-2">
           <Label className="text-gray-300 text-sm">Precio (ARS)</Label>
           <Input
             type="number"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            placeholder="15000"
+            placeholder="25000"
             min="0"
             step="100"
             required
@@ -143,6 +147,21 @@ export function PlanForm({ plan }: PlanFormProps) {
           />
         </div>
 
+        <div className="space-y-2">
+          <Label className="text-gray-300 text-sm">Precio original (opcional — para mostrar tachado)</Label>
+          <Input
+            type="number"
+            value={originalPrice}
+            onChange={(e) => setOriginalPrice(e.target.value)}
+            placeholder="30000"
+            min="0"
+            step="100"
+            className="bg-white/5 border-white/10 text-white placeholder:text-gray-600"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div className="space-y-2">
           <Label className="text-gray-300 text-sm">Objetivo</Label>
           <Select value={goal} onValueChange={(v) => setGoal(v as Plan['goal'])} required>
@@ -153,6 +172,21 @@ export function PlanForm({ plan }: PlanFormProps) {
               <SelectItem value="fat_loss" className="text-white">Pérdida de Grasa</SelectItem>
               <SelectItem value="hypertrophy" className="text-white">Masa Muscular</SelectItem>
               <SelectItem value="body_recomposition" className="text-white">Recomposición</SelectItem>
+              <SelectItem value="all" className="text-white">Para todos los objetivos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-gray-300 text-sm">Modalidad</Label>
+          <Select value={location} onValueChange={(v) => setLocation(v as Plan['location'])}>
+            <SelectTrigger className="bg-white/5 border-white/10 text-white">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-[#1a1a1a] border-white/10">
+              <SelectItem value="gym" className="text-white">Gym</SelectItem>
+              <SelectItem value="home" className="text-white">Casa</SelectItem>
+              <SelectItem value="both" className="text-white">Gym & Casa</SelectItem>
             </SelectContent>
           </Select>
         </div>
