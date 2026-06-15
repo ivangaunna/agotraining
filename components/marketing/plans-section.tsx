@@ -15,7 +15,7 @@ export async function PlansSection() {
             Elegí tu plan
           </h2>
           <p className="text-gray-400 mt-4 max-w-xl mx-auto">
-            Cada plan está diseñado específicamente para tu objetivo. Acceso inmediato, descarga en PDF, válido para siempre.
+            Cada plan está diseñado específicamente para tu objetivo, ya sea que entrenes en el gym o en casa. Acceso inmediato, descarga en PDF, válido para siempre.
           </p>
         </div>
 

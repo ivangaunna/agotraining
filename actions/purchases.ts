@@ -69,7 +69,8 @@ export async function initiateCheckout(planId: string) {
       .eq('id', purchase.id)
 
     return { checkoutUrl: preference.init_point }
-  } catch {
+  } catch (err) {
+    process.stdout.write('MP error: ' + String(err) + '\n')
     // Si falla MP, eliminar la compra pendiente
     await supabase.from('purchases').delete().eq('id', purchase.id)
     return { error: 'Error al conectar con Mercado Pago. Intentá de nuevo.' }
