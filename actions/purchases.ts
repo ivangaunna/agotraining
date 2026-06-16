@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { createPaymentPreference } from '@/lib/mercadopago/create-preference'
 import { redirect } from 'next/navigation'
 
@@ -116,8 +117,9 @@ export async function getSignedDownloadUrl(purchaseId: string) {
     return { error: 'Archivo no disponible todavía.' }
   }
 
-  // Crear URL firmada con TTL de 5 minutos
-  const { data: signedUrl, error: urlError } = await supabase.storage
+  // Crear URL firmada con TTL de 5 minutos (necesita admin para bypasear RLS de storage)
+  const adminClient = createAdminClient()
+  const { data: signedUrl, error: urlError } = await adminClient.storage
     .from(process.env.SUPABASE_STORAGE_BUCKET!)
     .createSignedUrl(planFile.storage_path, 300)
 
