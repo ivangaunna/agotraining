@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { CheckCircle2 } from 'lucide-react'
+import { FadeIn } from '@/components/ui/fade-in'
 
 const certifications = [
   'Instructor de Musculación y Especialista en Hipertrofia',
@@ -14,7 +15,7 @@ export function AboutSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Image */}
-          <div className="flex justify-center order-2 lg:order-1">
+          <FadeIn className="flex justify-center order-2 lg:order-1">
             <div className="relative w-80 h-[420px] lg:w-96 lg:h-[560px] rounded-2xl overflow-hidden border border-white/10">
               <Image
                 src="/images/principal1.png"
@@ -24,10 +25,10 @@ export function AboutSection() {
                 priority
               />
             </div>
-          </div>
+          </FadeIn>
 
           {/* Content */}
-          <div className="order-1 lg:order-2">
+          <FadeIn delay={150} className="order-1 lg:order-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm font-medium mb-6">
               Sobre mí
             </div>
@@ -52,7 +53,7 @@ export function AboutSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </FadeIn>
         </div>
       </div>
     </section>

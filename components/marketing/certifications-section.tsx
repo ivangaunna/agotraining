@@ -1,4 +1,5 @@
 import { Activity, Dumbbell, Heart, Moon, Laptop, Users, Award } from 'lucide-react'
+import { FadeIn } from '@/components/ui/fade-in'
 
 const certifications = [
   {
@@ -109,12 +110,12 @@ export function CertificationsSection() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {certifications.map((cert) => {
+          {certifications.map((cert, idx) => {
             const colors = colorMap[cert.color as keyof typeof colorMap]
             const Icon = cert.icon
             return (
+              <FadeIn key={cert.title} delay={idx * 80}>
               <div
-                key={cert.title}
                 className="flex flex-col gap-4 rounded-2xl border border-white/8 bg-[#111111] p-5 hover:border-white/15 transition-colors"
               >
                 <div className={`inline-flex w-10 h-10 items-center justify-center rounded-xl ${colors.bg} border ${colors.border}`}>
@@ -130,6 +131,7 @@ export function CertificationsSection() {
                   {cert.category}
                 </span>
               </div>
+              </FadeIn>
             )
           })}
         </div>

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { MessageCircle, ChevronDown } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
+import { FadeIn } from '@/components/ui/fade-in'
 import { cn } from '@/lib/utils'
 
 export function HeroSection() {
@@ -16,7 +17,7 @@ export function HeroSection() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Text */}
-          <div className="text-center lg:text-left order-2 lg:order-1">
+          <FadeIn className="text-center lg:text-left order-2 lg:order-1">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm font-medium mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
               Planes disponibles ahora
@@ -68,10 +69,10 @@ export function HeroSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </FadeIn>
 
           {/* Image */}
-          <div className="flex justify-center order-1 lg:order-2">
+          <FadeIn delay={150} className="flex justify-center order-1 lg:order-2">
             <div className="relative w-full max-w-sm h-72 sm:h-80 lg:w-96 lg:h-[500px] rounded-2xl overflow-hidden border border-white/10">
               <Image
                 src="/images/principal2.png"
@@ -85,7 +86,7 @@ export function HeroSection() {
                 <p className="text-gray-400 text-xs mt-0.5">Especialista en transformación física</p>
               </div>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </div>
 
