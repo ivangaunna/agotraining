@@ -105,8 +105,22 @@ export async function deletePlan(id: string) {
   await verifyAdmin()
 
   const adminClient = createAdminClient()
-  const { error } = await adminClient.from('plans').delete().eq('id', id)
 
+  // Borrar archivos de storage y registros de plan_files
+  const { data: files } = await adminClient
+    .from('plan_files')
+    .select('storage_path')
+    .eq('plan_id', id)
+
+  if (files && files.length > 0) {
+    await adminClient.storage
+      .from(process.env.SUPABASE_STORAGE_BUCKET!)
+      .remove(files.map((f) => f.storage_path))
+
+    await adminClient.from('plan_files').delete().eq('plan_id', id)
+  }
+
+  const { error } = await adminClient.from('plans').delete().eq('id', id)
   if (error) return { error: 'Error al eliminar el plan.' }
 
   revalidatePath('/admin/planes')
