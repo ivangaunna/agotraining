@@ -4,6 +4,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { formatCurrency } from '@/lib/utils'
 import { TogglePlanButton } from '@/components/admin/toggle-plan-button'
+import { DeletePlanButton } from '@/components/admin/delete-plan-button'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 
@@ -78,13 +79,16 @@ export default async function AdminPlanesPage() {
                         <TogglePlanButton id={plan.id} isActive={plan.is_active} />
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Link
-                          href={`/admin/planes/${plan.id}`}
-                          className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'text-gray-400 hover:text-white')}
-                        >
-                          <Pencil className="h-3.5 w-3.5 mr-1.5" />
-                          Editar
-                        </Link>
+                        <div className="flex items-center justify-end gap-1">
+                          <Link
+                            href={`/admin/planes/${plan.id}`}
+                            className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'text-gray-400 hover:text-white')}
+                          >
+                            <Pencil className="h-3.5 w-3.5 mr-1.5" />
+                            Editar
+                          </Link>
+                          <DeletePlanButton id={plan.id} />
+                        </div>
                       </td>
                     </tr>
                   )
