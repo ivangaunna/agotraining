@@ -12,7 +12,7 @@ export function DeletePlanButton({ id }: { id: string }) {
   const router = useRouter()
 
   async function handleDelete() {
-    if (!confirm('¿Seguro que querés eliminar este plan? Esta acción no se puede deshacer.')) return
+    if (!confirm('¿Seguro que querés eliminar este plan? Se borrarán también sus compras y archivos. Esta acción no se puede deshacer.')) return
     setLoading(true)
     const result = await deletePlan(id)
     if (result && 'error' in result) {

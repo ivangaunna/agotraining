@@ -116,9 +116,11 @@ export async function deletePlan(id: string) {
     await adminClient.storage
       .from(process.env.SUPABASE_STORAGE_BUCKET!)
       .remove(files.map((f) => f.storage_path))
-
     await adminClient.from('plan_files').delete().eq('plan_id', id)
   }
+
+  // Borrar compras asociadas
+  await adminClient.from('purchases').delete().eq('plan_id', id)
 
   const { error } = await adminClient.from('plans').delete().eq('id', id)
   if (error) return { error: 'Error al eliminar el plan.' }
