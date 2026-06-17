@@ -111,7 +111,7 @@ export async function deletePlan(id: string) {
 
   revalidatePath('/admin/planes')
   revalidatePath('/')
-  redirect('/admin/planes')
+  return { success: true }
 }
 
 export async function uploadPlanFile(planId: string, formData: FormData) {

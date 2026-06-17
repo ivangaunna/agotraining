@@ -5,9 +5,11 @@ import { Trash2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { deletePlan } from '@/actions/plans'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export function DeletePlanButton({ id }: { id: string }) {
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   async function handleDelete() {
     if (!confirm('¿Seguro que querés eliminar este plan? Esta acción no se puede deshacer.')) return
@@ -16,6 +18,9 @@ export function DeletePlanButton({ id }: { id: string }) {
     if (result && 'error' in result) {
       toast.error(result.error)
       setLoading(false)
+    } else {
+      toast.success('Plan eliminado')
+      router.refresh()
     }
   }
 
