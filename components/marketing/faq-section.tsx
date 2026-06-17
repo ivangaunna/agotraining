@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { FadeIn } from '@/components/ui/fade-in'
 
 const faqs = [
   {
@@ -42,18 +43,19 @@ export function FaqSection() {
   return (
     <section id="faq" className="py-24 bg-[#0D0D0D]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <FadeIn className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm font-medium mb-4">
             Preguntas frecuentes
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-white">
             ¿Tenés dudas?
           </h2>
-        </div>
+        </FadeIn>
 
         <div className="max-w-3xl mx-auto">
           <Accordion className="space-y-3">
             {faqs.map((faq, idx) => (
+              <FadeIn key={idx} delay={idx * 80}>
               <AccordionItem
                 key={idx}
                 value={idx}
@@ -66,6 +68,7 @@ export function FaqSection() {
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
+              </FadeIn>
             ))}
           </Accordion>
         </div>
