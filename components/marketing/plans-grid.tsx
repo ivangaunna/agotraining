@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { MessageCircle, Check } from 'lucide-react'
 import { PlanCard } from './plan-card'
+import { FadeIn } from '@/components/ui/fade-in'
 import type { Plan } from '@/types/database'
 
 const WHATSAPP_NUMBER = '5493482569105'
@@ -63,10 +64,13 @@ export function PlansGrid({ plans }: PlansGridProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
         {filtered.map((plan, idx) => (
-          <PlanCard key={plan.id} plan={plan} featured={idx === 1 && filtered.length > 1} />
+          <FadeIn key={plan.id} delay={idx * 100}>
+            <PlanCard plan={plan} featured={idx === 1 && filtered.length > 1} />
+          </FadeIn>
         ))}
 
         {/* Card Asesoría Personalizada */}
+        <FadeIn delay={filtered.length * 100}>
         <div className="relative flex flex-col rounded-2xl p-6 border border-emerald-500/30 bg-gradient-to-b from-emerald-950/20 to-[#111111] hover:-translate-y-1 transition-all duration-300">
           <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
             <span className="inline-block bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -106,6 +110,7 @@ export function PlansGrid({ plans }: PlansGridProps) {
             Consultar por WhatsApp
           </a>
         </div>
+        </FadeIn>
       </div>
     </div>
   )

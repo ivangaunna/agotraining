@@ -1,4 +1,5 @@
 import { ShoppingCart, CreditCard, Mail, Download } from 'lucide-react'
+import { FadeIn } from '@/components/ui/fade-in'
 
 const steps = [
   {
@@ -31,7 +32,7 @@ export function HowItWorksSection() {
   return (
     <section id="como-funciona" className="py-24 bg-[#0D0D0D]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <FadeIn className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm font-medium mb-4">
             Proceso simple
           </div>
@@ -41,11 +42,11 @@ export function HowItWorksSection() {
           <p className="text-gray-400 mt-4 max-w-xl mx-auto">
             En 4 pasos simples tenés acceso a tu plan de entrenamiento profesional.
           </p>
-        </div>
+        </FadeIn>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((step, idx) => (
-            <div key={step.number} className="relative">
+            <FadeIn key={step.number} delay={idx * 100} className="relative">
               {/* Connector line */}
               {idx < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-10 left-[calc(50%+2.5rem)] w-[calc(100%-5rem)] h-px bg-gradient-to-r from-white/10 to-transparent z-0" />
@@ -61,7 +62,7 @@ export function HowItWorksSection() {
                 <h3 className="text-base font-semibold text-white mb-2">{step.title}</h3>
                 <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
               </div>
-            </div>
+            </FadeIn>
           ))}
         </div>
       </div>
