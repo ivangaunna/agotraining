@@ -39,7 +39,7 @@ export async function register(formData: FormData) {
   }
 
   const supabase = await createClient()
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
@@ -48,11 +48,15 @@ export async function register(formData: FormData) {
   })
 
   if (error) {
-    console.error('[register] Supabase error: ' + error.message + ' status=' + error.status + ' code=' + (error as any).code)
     if (error.message.includes('already registered')) {
       return { error: 'Ya existe una cuenta con ese email.' }
     }
     return { error: 'Error al crear la cuenta. Intentá de nuevo.' }
+  }
+
+  // Supabase devuelve identities vacío cuando el email ya está registrado
+  if (data.user?.identities?.length === 0) {
+    return { error: 'Ya existe una cuenta con ese email.' }
   }
 
   return { success: 'Revisá tu email para confirmar tu cuenta.' }
