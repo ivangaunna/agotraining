@@ -10,7 +10,7 @@ export async function initiateCheckout(planId: string) {
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    redirect('/login')
+    return { loginRequired: true }
   }
 
   // Obtener el plan desde DB (precio real, nunca del cliente)
@@ -52,6 +52,7 @@ export async function initiateCheckout(planId: string) {
     .single()
 
   if (purchaseError || !purchase) {
+    process.stdout.write('Purchase insert error: ' + JSON.stringify(purchaseError) + '\n')
     return { error: 'Error al iniciar el proceso de compra.' }
   }
 

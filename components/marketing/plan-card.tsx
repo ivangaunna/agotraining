@@ -21,6 +21,11 @@ export function PlanCard({ plan, featured = false }: PlanCardProps) {
     setLoading(true)
     try {
       const result = await initiateCheckout(plan.id)
+      if ('loginRequired' in result) {
+        toast.error('Necesitás iniciar sesión para comprar.')
+        setTimeout(() => { window.location.href = '/login' }, 1500)
+        return
+      }
       if ('error' in result && result.error) {
         toast.error(result.error)
         return
