@@ -51,6 +51,9 @@ export async function register(formData: FormData) {
     if (error.message.includes('already registered')) {
       return { error: 'Ya existe una cuenta con ese email.' }
     }
+    if (error.status === 429 || error.message.includes('rate limit')) {
+      return { error: 'Demasiados intentos. Esperá unos minutos y volvé a intentarlo.' }
+    }
     return { error: 'Error al crear la cuenta. Intentá de nuevo.' }
   }
 
