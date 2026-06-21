@@ -130,40 +130,42 @@ export async function deletePlan(id: string) {
   return { success: true }
 }
 
-export async function uploadPlanFile(planId: string, formData: FormData) {
+export async function getSignedUploadUrl(planId: string, fileName: string) {
   await verifyAdmin()
-
-  const file = formData.get('file') as File
-  if (!file || file.type !== 'application/pdf') {
-    return { error: 'Solo se permiten archivos PDF.' }
-  }
-
-  if (file.size > 50 * 1024 * 1024) {
-    return { error: 'El archivo no puede superar 50MB.' }
-  }
 
   const adminClient = createAdminClient()
   const bucket = process.env.SUPABASE_STORAGE_BUCKET!
-  const storagePath = `plans/${planId}/${Date.now()}_${file.name}`
+  const storagePath = `plans/${planId}/${Date.now()}_${fileName}`
 
-  const { error: uploadError } = await adminClient.storage
+  const { data, error } = await adminClient.storage
     .from(bucket)
-    .upload(storagePath, file, { contentType: 'application/pdf', upsert: false })
+    .createSignedUploadUrl(storagePath)
 
-  if (uploadError) return { error: 'Error al subir el archivo.' }
+  if (error || !data) return { error: 'Error al generar URL de subida.' }
 
-  // Marcar archivos anteriores como no actuales
+  return { signedUrl: data.signedUrl, storagePath }
+}
+
+export async function registerUploadedFile(
+  planId: string,
+  storagePath: string,
+  fileName: string,
+  fileSize: number,
+) {
+  await verifyAdmin()
+
+  const adminClient = createAdminClient()
+
   await adminClient
     .from('plan_files')
     .update({ is_current: false })
     .eq('plan_id', planId)
 
-  // Crear registro del nuevo archivo
   const { error: dbError } = await adminClient.from('plan_files').insert({
     plan_id: planId,
     storage_path: storagePath,
-    file_name: file.name,
-    file_size: file.size,
+    file_name: fileName,
+    file_size: fileSize,
     is_current: true,
   })
 
