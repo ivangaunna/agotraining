@@ -143,7 +143,7 @@ export async function getSignedUploadUrl(planId: string, fileName: string) {
 
   if (error || !data) return { error: 'Error al generar URL de subida.' }
 
-  return { signedUrl: data.signedUrl, storagePath }
+  return { token: data.token, storagePath, bucket }
 }
 
 export async function registerUploadedFile(

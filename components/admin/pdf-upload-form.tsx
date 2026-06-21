@@ -2,8 +2,8 @@
 
 import { useState, useRef } from 'react'
 import { Upload, Loader2, CheckCircle2 } from 'lucide-react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { getSignedUploadUrl, registerUploadedFile } from '@/actions/plans'
+import { createClient } from '@/lib/supabase/client'
 import { formatDate } from '@/lib/utils'
 import type { PlanFile } from '@/types/database'
 import { toast } from 'sonner'
@@ -16,7 +16,6 @@ interface PdfUploadFormProps {
 
 export function PdfUploadForm({ planId, currentFiles }: PdfUploadFormProps) {
   const [uploading, setUploading] = useState(false)
-  const [progress, setProgress] = useState(0)
   const [dragOver, setDragOver] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
@@ -34,9 +33,8 @@ export function PdfUploadForm({ planId, currentFiles }: PdfUploadFormProps) {
     }
 
     setUploading(true)
-    setProgress(0)
 
-    // 1. Obtener URL firmada del servidor (no pasa el archivo por Vercel)
+    // 1. Obtener token de subida del servidor
     const urlResult = await getSignedUploadUrl(planId, file.name)
     if ('error' in urlResult) {
       toast.error(urlResult.error)
@@ -44,26 +42,17 @@ export function PdfUploadForm({ planId, currentFiles }: PdfUploadFormProps) {
       return
     }
 
-    // 2. Subir directo a Supabase Storage desde el browser
-    try {
-      await new Promise<void>((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) setProgress(Math.round((e.loaded / e.total) * 100))
-        }
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) resolve()
-          else reject(new Error(`HTTP ${xhr.status}`))
-        }
-        xhr.onerror = () => reject(new Error('Error de red'))
-        xhr.open('PUT', urlResult.signedUrl)
-        xhr.setRequestHeader('Content-Type', 'application/pdf')
-        xhr.send(file)
+    // 2. Subir directo a Supabase desde el browser usando el SDK (maneja el formato correcto)
+    const supabase = createClient()
+    const { error: uploadError } = await supabase.storage
+      .from(urlResult.bucket)
+      .uploadToSignedUrl(urlResult.storagePath, urlResult.token, file, {
+        contentType: 'application/pdf',
       })
-    } catch {
+
+    if (uploadError) {
       toast.error('Error al subir el archivo. Intentá de nuevo.')
       setUploading(false)
-      setProgress(0)
       return
     }
 
@@ -77,7 +66,6 @@ export function PdfUploadForm({ planId, currentFiles }: PdfUploadFormProps) {
     }
 
     setUploading(false)
-    setProgress(0)
   }
 
   function handleDrop(e: React.DragEvent) {
@@ -126,17 +114,9 @@ export function PdfUploadForm({ planId, currentFiles }: PdfUploadFormProps) {
           disabled={uploading}
         />
         {uploading ? (
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-2">
             <Loader2 className="h-8 w-8 text-blue-400 animate-spin" />
-            <p className="text-sm text-gray-400">Subiendo PDF... {progress > 0 ? `${progress}%` : ''}</p>
-            {progress > 0 && (
-              <div className="w-48 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-500 rounded-full transition-all duration-200"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            )}
+            <p className="text-sm text-gray-400">Subiendo PDF...</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
