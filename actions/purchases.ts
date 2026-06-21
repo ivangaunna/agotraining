@@ -3,7 +3,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createPaymentPreference } from '@/lib/mercadopago/create-preference'
-import { redirect } from 'next/navigation'
 
 export async function initiateCheckout(planId: string) {
   const supabase = await createClient()
@@ -52,7 +51,6 @@ export async function initiateCheckout(planId: string) {
     .single()
 
   if (purchaseError || !purchase) {
-    process.stdout.write('Purchase insert error: ' + JSON.stringify(purchaseError) + '\n')
     return { error: 'Error al iniciar el proceso de compra.' }
   }
 
@@ -71,9 +69,7 @@ export async function initiateCheckout(planId: string) {
       .eq('id', purchase.id)
 
     return { checkoutUrl: preference.init_point }
-  } catch (err) {
-    process.stdout.write('MP error: ' + String(err) + '\n')
-    // Si falla MP, eliminar la compra pendiente
+  } catch {
     await supabase.from('purchases').delete().eq('id', purchase.id)
     return { error: 'Error al conectar con Mercado Pago. Intentá de nuevo.' }
   }

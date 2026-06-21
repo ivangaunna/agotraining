@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { login } from '@/actions/auth'
-import type { Metadata } from 'next'
 
 export default function LoginPage() {
   const [pending, setPending] = useState(false)
